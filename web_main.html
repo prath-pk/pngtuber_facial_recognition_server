@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Image Display</title>
+</head>
+<body>
+    <img id="image-display" src="" alt="Dynamic Image">
+
+    <script>
+        async function loadImage() {
+            const response = await fetch('/api/image');
+            const data = await response.json();
+            document.getElementById('image-display').src = data.imageUrl;
+            document.getElementById('state-value').textContent = data.state;
+        }
+
+        // Load initial image
+        loadImage();
+
+        const eventSource = new EventSource('/api/events');
+
+        eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log('Received update from server:', data);
+        loadImage();
+        };
+
+        eventSource.onerror = (error) => {
+        console.error('SSE connection error:', error);
+        };
+    </script>
+</body>
+</html>

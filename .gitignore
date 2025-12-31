@@ -1,0 +1,5 @@
+.face_detect/
+database/
+__pycache__/
+testing/
+test.py

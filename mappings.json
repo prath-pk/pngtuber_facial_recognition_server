@@ -1,0 +1,83 @@
+{
+    "ILoveYou":
+    {
+        "Thinking":
+        {
+            "browOuterUpRight": [">=", 0.40],
+            "browOuterUpLeft": ["<", 0.30],
+            "eyeBlinkLeft": ["<", 0.30]
+        },
+        "Excited": 
+        {
+            "jawOpen": [">=", 0.60]
+        },
+        "Loved":
+        {
+            "mouthSmileLeft": [">=", 0.70],
+            "mouthSmileRight": [">=", 0.70],
+            "mouthUpperUpLeft": [">=", 0.70],
+            "mouthUpperUpRight": [">=", 0.70]
+        },
+        "Proud":
+        {
+            "mouthSmileLeft": [">=", 0.40],
+            "mouthSmileRight": [">=", 0.40],
+            "mouthUpperUpLeft": ["<", 0.30],
+            "mouthUpperUpRight": ["<", 0.30]
+        },
+        "Confused":
+        {
+            "eyeSquintLeft": [">=", 0.50],
+            "eyeSquintRight": [">=", 0.50],
+            "mouthSmileLeft":["<", 0.30],
+            "mouthSmileRight": ["<", 0.30]
+        },
+        "Sad":
+        {
+            "mouthShrugLower": [">=", 0.80],
+            "mouthShrugUpper": [">=", 0.50]
+        },
+        "Embarrassed":
+        {
+            "mouthRight": [">=", 0.60]
+        },
+        "Frustrated":
+        {
+            "mouthLeft": [">=", 0.60]
+        }
+    },
+    "Open_Palm":
+    {
+        "Crying":
+        {
+            "mouthShrugLower": [">=", 0.80],
+            "mouthShrugUpper": [">=", 0.50]
+        },
+        "Shrug":
+        {
+            "eyeSquintLeft": [">=", 0.40],
+            "eyeSquintRight": [">=", 0.40],
+            "mouthSmileLeft":["<", 0.30],
+            "mouthSmileRight": ["<", 0.30]
+        },
+        "Surprised": 
+        {
+            "jawOpen": [">=", 0.60]
+        },
+        "Sleeping": 
+        {
+            "mouthRight": [">=", 0.60]
+        },
+        "Enchanted": 
+        {
+            "mouthLeft": [">=", 0.60]
+        },
+        "Laughing":
+        {
+            "mouthSmileLeft": [">=", 0.70],
+            "mouthSmileRight": [">=", 0.70],
+            "mouthUpperUpLeft": [">=", 0.70],
+            "mouthUpperUpRight": [">=", 0.70]
+        }
+    }
+}
