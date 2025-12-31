@@ -55,8 +55,8 @@
         },
         "Shrug":
         {
-            "eyeSquintLeft": [">=", 0.40],
-            "eyeSquintRight": [">=", 0.40],
+            "eyeSquintLeft": [">=", 0.50],
+            "eyeSquintRight": [">=", 0.50],
             "mouthSmileLeft":["<", 0.30],
             "mouthSmileRight": ["<", 0.30]
         },

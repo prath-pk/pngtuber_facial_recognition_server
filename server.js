@@ -170,6 +170,30 @@ const server = http.createServer((req, res) => {
             res.end(data);
         });
     }
+
+    else if (parsedUrl.pathname.startsWith('/fonts/') || parsedUrl.pathname.match(/\.(ttf|woff|woff2|otf)$/)) {
+        const fontPath = path.join(__dirname, parsedUrl.pathname);
+        
+        fs.readFile(fontPath, (err, data) => {
+            if (err) {
+                res.writeHead(404, { 'Content-Type': 'text/plain' });
+                res.end('Image not found');
+                return;
+            }
+            
+            // Set correct content type based on file extension
+            const ext = path.extname(fontPath);
+            const contentType = {
+                '.ttf': 'font/ttf',
+                '.woff': 'font/woff',
+                '.woff2': 'font/woff2',
+                '.otf': 'font/otf'
+            }[ext] || 'font/woff';
+            
+            res.writeHead(200, { 'Content-Type': contentType });
+            res.end(data);
+        });
+    }
     
     // 404 for other routes
     else {

@@ -4,16 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Image Display</title>
+    <style>
+
+        @font-face {
+            font-family: "CaesarDressing";
+            src: url("/fonts/CaesarDressing-Regular.ttf") format("truetype");
+        }
+
+        @font-face {
+            font-family: "AlegreyaSans";
+            src: url("/fonts/AlegreyaSans-Regular.ttf") format("truetype");
+        }
+
+       .ui-box {
+            width: 900px;
+            max-width: 100%;
+            aspect-ratio: 1375 / 484;
+
+            background: url("images/UI.png") center / contain no-repeat;
+
+            /* Outer frame padding (gold border thickness) */
+            padding: 2.2% 6% 6% 5%;
+
+            box-sizing: border-box;
+        }
+
+            /* Inner content area */
+        .ui-content {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+
+            /* Name plate */
+        .ui-name {
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+
+            width: 45%;
+            height: 18%;
+
+            display: flex;
+            align-items: center;
+            padding-left: 7%;
+
+            font-family: "CaesarDressing", serif !important;
+            font-size: clamp(54px, 2vw, 30px);
+            font-weight: 700;
+
+            color: #f6e6b8;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.7);
+
+            /* visually aligns with brown plate */
+         }
+
+            /* Dialogue box */
+        .ui-text {
+            margin-top: 5%;
+
+            height: calc(100% - 24%);
+            padding: 2% 10%;
+
+            font-family: "AlegreyaSans", serif !important;
+            font-size: clamp(70px, 1.6vw, 20px);
+            line-height: 1.45;
+
+            color: #2b2b2b;
+
+            overflow-y: auto;
+        }
+
+
+    </style>
 </head>
 <body>
     <img id="image-display" src="" alt="Dynamic Image">
+    <div class="ui-box">
+        <div class="ui-content">
+            <div id ="ui-title" class="ui-name">Eshnor</div>
+                <div id="ui-subtitle" class="ui-text"></div>
+            </div>
+        </div>
 
     <script>
         async function loadImage() {
             const response = await fetch('/api/image');
             const data = await response.json();
+            const str = data.imageUrl.slice(8,-4) + "..."
             document.getElementById('image-display').src = data.imageUrl;
-            document.getElementById('state-value').textContent = data.state;
+            document.getElementById('ui-subtitle').innerText = str;
         }
 
         // Load initial image
