@@ -1,12 +1,11 @@
 import requests
 import json
 import cv2
-import base64
 import time
+import operator
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-from mappings import check_condition
 #from mediapipe.tasks.python import audio
 
 
@@ -14,9 +13,24 @@ from mappings import check_condition
 face_model_path='mediapipe_models/face_landmarker.task'
 gesture_model_path='mediapipe_models/gesture_recognizer.task'
 mapping_data = None
+ops = {
+    '>=': operator.ge,
+    '>': operator.gt,
+    '<=': operator.le,
+    '<': operator.lt,
+    '==': operator.eq,
+    '!=': operator.ne
+}
 
 with open('mappings.json', 'r') as file:
     mapping_data = json.load(file)
+
+def check_condition(expected_dict, actual_dict):
+    all_met = all(
+        ops[op](actual_dict.get(key, 0), threshold)
+        for key, (op, threshold) in expected_dict.items()
+    )
+    return all_met
 
 def face_landmark_decode(facal_expression_dict, gesture):
     print(facal_expression_dict)
