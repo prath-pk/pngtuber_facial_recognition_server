@@ -17,26 +17,33 @@
         }
 
        .ui-box {
+            position: relative;
             width: 900px;
-            max-width: 100%;
             aspect-ratio: 1375 / 484;
 
-            background: url("images/UI.png") center / contain no-repeat;
-
             /* Outer frame padding (gold border thickness) */
-            padding: 2.2% 6% 6% 5%;
+            /**/
+        }
+
+        .ui-bg {
+            position: absolute;
+            inset: 0;
+            background: url("images/UI.png") center / contain no-repeat;
+            z-index: 0;
+        }
+
+        /* Inner content area */
+        .ui-content {
+
+            position: relative;
+            padding: 4% 6% 6% 11%;
+            z-index: 1;            /* 👈 ensure text is on top */
+            height: 100%;
 
             box-sizing: border-box;
         }
 
-            /* Inner content area */
-        .ui-content {
-            position: relative;
-            height: 100%;
-            width: 100%;
-        }
-
-            /* Name plate */
+        /* Name plate */
         .ui-name {
             -webkit-font-smoothing: antialiased;
             text-rendering: optimizeLegibility;
@@ -58,7 +65,7 @@
             /* visually aligns with brown plate */
          }
 
-            /* Dialogue box */
+        /* Dialogue box */
         .ui-text {
             margin-top: 5%;
 
@@ -80,11 +87,12 @@
 <body>
     <img id="image-display" src="" alt="Dynamic Image">
     <div class="ui-box">
+        <div class="ui-bg"></div>
         <div class="ui-content">
             <div id ="ui-title" class="ui-name">Eshnor</div>
-                <div id="ui-subtitle" class="ui-text"></div>
-            </div>
+            <div id="ui-subtitle" class="ui-text"></div>
         </div>
+    </div>
 
     <script>
         async function loadImage() {
