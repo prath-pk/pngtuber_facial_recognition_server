@@ -119,8 +119,8 @@ def face_detect(face_landmarker,mp_image,facal_expression_dict,current_time,gest
                 facal_expression_dict[category.category_name] = float(f"{category.score:.2f}")
         last_send_time = current_time
 
-    if facal_expression_dict:
-        face_landmark_decode(facal_expression_dict, gesture)
+        if facal_expression_dict:
+            face_landmark_decode(facal_expression_dict, gesture)
     return last_send_time
 
 if __name__ == "__main__":
