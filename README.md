@@ -6,7 +6,7 @@ This repo lets you configure some pre-created static images with some emotes to 
 ## Requirements
 
 * [Node.Js](https://nodejs.org/en/download/current)
-    * Install [nodemon](https://www.npmjs.com/package/nodemon) (For easier deployment) globally.
+    * [nodemon](https://www.npmjs.com/package/nodemon) (For easier deployment)
 * Python
     * [mediapipe Python Library](https://ai.google.dev/edge/mediapipe/solutions/guide)
 
@@ -27,7 +27,7 @@ This repo lets you configure some pre-created static images with some emotes to 
         2. <path to virtual env\>/Scripts/activate
         ```
     </details>
-7. Install requirements.txt.
+7. Install requirements.txt (After virtual env activation).
     ```
     pip install -r requirements.txt
     ```
