@@ -23,7 +23,7 @@ This repo lets you configure some pre-created static images with some emotes to 
 
         ```
         1. cd path/to/your/project
-        2. python -m venv venv or python3 -m venv venv
+        2. python -m venv <name of your virtual env> or python3 -m venv <name of your virtual env>
         2. <path to virtual env\>/Scripts/activate
         ```
     </details>

@@ -111,7 +111,7 @@
         async function loadImage() {
             const response = await fetch('/api/image');
             const data = await response.json();
-            const str = data.imageUrl.slice(8,-4) + "..."
+            const str = data.imageUrl.slice(15,-4) + "..."
             document.getElementById('image-display').src = data.imageUrl;
             document.getElementById('ui-subtitle').innerText = str;
         }
