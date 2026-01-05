@@ -8,22 +8,22 @@ let imageState = "Chatting";
 
 // Sample image URLs (replace with your local images)
 const images = {
-    "Chatting": '/images/Chatting.png',
-    "Laughing": '/images/Laughing.png',
-    "Thinking": '/images/Thinking.png',
-    "Surprised": '/images/Surprised.png',
-    "Proud": '/images/Proud.png',
-    "Confused": '/images/Confused.png',
-    "Sad": '/images/Sad.png',
-    "Loved": '/images/Loved.png',
-    "Frustrated": '/images/Frustrated.png',
-    "Embarrassed": '/images/Embarrassed.png',
-    "Crying": '/images/Crying.png',
-    "Shrug": '/images/Shrug.png',
-    "Excited": '/images/Excited.png',
-    "Loved": '/images/Loved.png',
-    "Enchanted": '/images/Enchanted.png',
-    "Sleeping": '/images/Sleeping.png'
+    "Chatting": '/public/images/Chatting.png',
+    "Laughing": '/public/images/Laughing.png',
+    "Thinking": '/public/images/Thinking.png',
+    "Surprised": '/public/images/Surprised.png',
+    "Proud": '/public/images/Proud.png',
+    "Confused": '/public/images/Confused.png',
+    "Sad": '/public/images/Sad.png',
+    "Loved": '/public/images/Loved.png',
+    "Frustrated": '/public/images/Frustrated.png',
+    "Embarrassed": '/public/images/Embarrassed.png',
+    "Crying": '/public/images/Crying.png',
+    "Shrug": '/public/images/Shrug.png',
+    "Excited": '/public/images/Excited.png',
+    "Loved": '/public/images/Loved.png',
+    "Enchanted": '/public/images/Enchanted.png',
+    "Sleeping": '/public/images/Sleeping.png'
 };
 
 function reset_image() {
@@ -71,7 +71,7 @@ const server = http.createServer((req, res) => {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
             state: imageState,
-            imageUrl: `/images/${imageState}.png`
+            imageUrl: `/public/images/${imageState}.png`
         }));
     }
     
@@ -147,7 +147,7 @@ const server = http.createServer((req, res) => {
     }
     
     // Serve static images
-    else if (parsedUrl.pathname.startsWith('/images/') || parsedUrl.pathname.match(/\.(jpg|jpeg|png|gif)$/)) {
+    else if (parsedUrl.pathname.startsWith('/public/images/') || parsedUrl.pathname.match(/\.(jpg|jpeg|png|gif)$/)) {
         const imagePath = path.join(__dirname, parsedUrl.pathname);
         
         fs.readFile(imagePath, (err, data) => {
@@ -171,7 +171,7 @@ const server = http.createServer((req, res) => {
         });
     }
 
-    else if (parsedUrl.pathname.startsWith('/fonts/') || parsedUrl.pathname.match(/\.(ttf|woff|woff2|otf)$/)) {
+    else if (parsedUrl.pathname.startsWith('/public/fonts/') || parsedUrl.pathname.match(/\.(ttf|woff|woff2|otf)$/)) {
         const fontPath = path.join(__dirname, parsedUrl.pathname);
         
         fs.readFile(fontPath, (err, data) => {

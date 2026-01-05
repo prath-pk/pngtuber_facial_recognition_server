@@ -8,12 +8,12 @@
 
         @font-face {
             font-family: "CaesarDressing";
-            src: url("/fonts/CaesarDressing-Regular.ttf") format("truetype");
+            src: url("/public/fonts/CaesarDressing-Regular.ttf") format("truetype");
         }
 
         @font-face {
             font-family: "AlegreyaSans";
-            src: url("/fonts/AlegreyaSans-Regular.ttf") format("truetype");
+            src: url("/public/fonts/AlegreyaSans-Regular.ttf") format("truetype");
         }
 
         .main-img {
@@ -39,7 +39,7 @@
         .ui-bg {
             position: absolute;
             inset: 0;
-            background: url("images/UI.png") center / contain no-repeat;
+            background: url("/public/images/UI.png") center / contain no-repeat;
             z-index: 0;
         }
 
@@ -111,7 +111,7 @@
         async function loadImage() {
             const response = await fetch('/api/image');
             const data = await response.json();
-            const str = data.imageUrl.slice(8,-4) + "..."
+            const str = data.imageUrl.slice(15,-4) + "..."
             document.getElementById('image-display').src = data.imageUrl;
             document.getElementById('ui-subtitle').innerText = str;
         }
