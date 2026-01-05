@@ -16,10 +16,21 @@
             src: url("/fonts/AlegreyaSans-Regular.ttf") format("truetype");
         }
 
+        .main-img {
+            position: absolute;
+            z-index: 0;
+
+            /* Outer frame padding (gold border thickness) */
+            /**/
+        }
+
        .ui-box {
             position: relative;
-            width: 900px;
+            width: 1050px;
             aspect-ratio: 1375 / 484;
+            left: 10px;
+            top: 900px;
+            z-index: 1;
 
             /* Outer frame padding (gold border thickness) */
             /**/
@@ -85,12 +96,14 @@
     </style>
 </head>
 <body>
-    <img id="image-display" src="" alt="Dynamic Image">
-    <div class="ui-box">
-        <div class="ui-bg"></div>
-        <div class="ui-content">
-            <div id ="ui-title" class="ui-name">Eshnor</div>
-            <div id="ui-subtitle" class="ui-text"></div>
+    <img id="image-display" src="" alt="Dynamic Image" class="main-img">
+    <dev class="ui-img">
+        <div class="ui-box">
+            <div class="ui-bg"></div>
+            <div class="ui-content">
+                <div id ="ui-title" class="ui-name">Eshnor</div>
+                <div id="ui-subtitle" class="ui-text"></div>
+            </div>
         </div>
     </div>
 
