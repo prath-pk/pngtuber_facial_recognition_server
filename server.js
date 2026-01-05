@@ -4,10 +4,12 @@ const url = require('url');
 const path = require('path');
 
 // Variable that controls which image to display
-let imageState = "Chatting";
+let imageState = "Idle";
+let isInTimeout = false;
 
 // Sample image URLs (replace with your local images)
 const images = {
+    "Idle": '/public/images/Idle.png',
     "Chatting": '/public/images/Chatting.png',
     "Laughing": '/public/images/Laughing.png',
     "Thinking": '/public/images/Thinking.png',
@@ -32,7 +34,7 @@ function reset_image() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ imageState: "Chatting", func: "reset" }),
+            body: JSON.stringify({ imageState: "Idle", func: "reset" }),
         })
         .then(response => response.json()) // Automatically parses the JSON response
         .then(data => console.log(data))
@@ -75,50 +77,47 @@ const server = http.createServer((req, res) => {
         }));
     }
     
-    // API endpoint to change the image state (from browser buttons)
-    // else if (parsedUrl.pathname === '/api/change') {
-    //     const newState = parsedUrl.query.state;
-    //     if (images[newState]) {
-    //         let imageState = newState;
-    //         console.log(`Image state changed to: ${imageState}`);
-    //         notifyClients();
-    //     }
-    //     res.writeHead(200, { 'Content-Type': 'application/json' });
-    //     res.end(JSON.stringify({ success: true, state: imageState }));
-    // }
-    
     // API endpoint to receive data from Python
     else if (parsedUrl.pathname === '/api/update' && req.method === 'POST') {
         let body = '';
-        
+    
         req.on('data', chunk => {
             body += chunk.toString();
         });
-        
+            
         req.on('end', () => {
-            try {
-                const data = JSON.parse(body);
-                const newState = data.imageState;
-                
-                if (images[newState]) {
-                    imageState = newState;
-                    console.log(`Image state updated from Python: ${imageState}`);
-                    notifyClients();
+            if (!isInTimeout) {
+                try {
+                    const data = JSON.parse(body);
+                    const newState = data.imageState;
                     
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: true, state: imageState }));
-                    if (data.func != "reset") {
-                        setTimeout(() => {
-                                reset_image()
-                            }, 10000)
+                    if (images[newState]) {
+                        imageState = newState;
+                        console.log(`Image state updated from Python: ${imageState}`);
+                        notifyClients();
+                        
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ success: true, state: imageState }));
+                        if (data.func != "reset") {
+                            if (data.func != "voice") {
+                                setTimeout(() => {
+                                        isInTimeout = false;
+                                        reset_image();
+                                    }, 10000)
+                                isInTimeout = true;
+                            }
+                        }
+                    } else {
+                        res.writeHead(400, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ success: false, error: 'Invalid state' }));
                     }
-                } else {
+                } catch (error) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: false, error: 'Invalid state' }));
+                    res.end(JSON.stringify({ success: false, error: 'Invalid JSON' }));
                 }
-            } catch (error) {
+            } else {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: false, error: 'Invalid JSON' }));
+                res.end(JSON.stringify({ success: false, error: 'State is still running' }));
             }
         });
     }
