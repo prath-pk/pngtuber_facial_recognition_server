@@ -102,6 +102,7 @@ def realtime_face_hands_webcam(face_model_path, gesture_model_path):
 
                     elif gesture == "Open_Palm":
                         last_send_time = face_detect(face_landmarker,mp_image,facal_expression_dict,current_time,gesture)
+                        
             
             if cv2.waitKey(5) & 0xFF == ord('q'):
                 break
@@ -116,10 +117,10 @@ def face_detect(face_landmarker,mp_image,facal_expression_dict,current_time,gest
         for idx, blendshapes in enumerate(face_result.face_blendshapes):
             for category in blendshapes:
                 facal_expression_dict[category.category_name] = float(f"{category.score:.2f}")
-            last_send_time = current_time
+        last_send_time = current_time
 
-    if facal_expression_dict:
-        face_landmark_decode(facal_expression_dict, gesture)
+        if facal_expression_dict:
+            face_landmark_decode(facal_expression_dict, gesture)
     return last_send_time
 
 if __name__ == "__main__":
