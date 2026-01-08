@@ -2,6 +2,7 @@
 # PNGTuber Facial and Gesture Recognition Emote Server
 
 This repo lets you configure some pre-created static images with some emotes to be shown using facial and gesture recognition. It uses Google's free AI library mediapipe.
+
 This makes the character emote similar to a Hades game character.
 
 ## Requirements
@@ -29,9 +30,13 @@ This makes the character emote similar to a Hades game character.
         ```
     </details>
 7. Install requirements.txt (After virtual env activation).
-    ```
-    pip install -r requirements.txt
-    ```
+    * <details>
+        <summary>Steps</summary>
+
+        ```
+        pip install -r requirements.txt
+        ```
+    </details>
 8. If you're using windows (like me) I've created batch files to run the code directly.
 9. If you're using Linux then you can run both python and node scripts in any order but first node server is recommended.
     * <details>
