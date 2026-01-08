@@ -108,6 +108,224 @@
     </div>
 
     <script>
+        const timestamp = 0;
+
+        class MicActivityDetector {
+            constructor(config = {}) {
+                this.threshold = config.threshold || 50;
+                this.smoothing = config.smoothing || 0.8;
+                this.onVoiceStart = config.onVoiceStart || (() => {});
+                this.onVoiceEnd = config.onVoiceEnd || (() => {});
+                this.onLevelUpdate = config.onLevelUpdate || (() => {});
+                
+                this.audioContext = null;
+                this.analyser = null;
+                this.microphone = null;
+                this.dataArray = null;
+                this.mediaStream = null;
+                this.isActive = false;
+                this.isListening = false;
+                this.checkInterval = null;
+                
+                // Auto-start
+                this.init();
+            }
+            
+            async init() {
+                try {
+                    console.log('Initializing microphone...');
+                    
+                    // Request microphone access
+                    this.mediaStream = await navigator.mediaDevices.getUserMedia({
+                        audio: {
+                            echoCancellation: true,
+                            noiseSuppression: true,
+                            autoGainControl: true
+                        }
+                    });
+                    
+                    console.log('Microphone access granted');
+                    
+                    // Setup audio context
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.analyser = this.audioContext.createAnalyser();
+                    this.microphone = this.audioContext.createMediaStreamSource(this.mediaStream);
+                    
+                    this.analyser.smoothingTimeConstant = this.smoothing;
+                    this.analyser.fftSize = 512;
+                    
+                    this.microphone.connect(this.analyser);
+                    
+                    const bufferLength = this.analyser.frequencyBinCount;
+                    this.dataArray = new Uint8Array(bufferLength);
+                    
+                    this.isListening = true;
+                    
+                    // Start continuous checking
+                    this.startDetection();
+                    
+                    console.log('Mic detector running in background');
+                    
+                } catch (error) {
+                    console.error('Failed to initialize microphone:', error);
+                    
+                    if (error.name === 'NotAllowedError') {
+                        console.error('Microphone permission denied');
+                    } else if (error.name === 'NotFoundError') {
+                        console.error('No microphone found');
+                    } else if (error.name === 'NotSupportedError') {
+                        console.error('HTTPS or localhost required for microphone access');
+                    }
+                }
+            }
+            
+            startDetection() {
+                // Use setInterval instead of requestAnimationFrame for true background operation
+                this.checkInterval = setInterval(() => {
+                    this.checkActivity();
+                }, 100); // Check every 100ms
+            }
+            
+            checkActivity() {
+                if (!this.analyser || !this.dataArray) return;
+                
+                this.analyser.getByteFrequencyData(this.dataArray);
+                
+                // Calculate average volume
+                let sum = 0;
+                for (let i = 0; i < this.dataArray.length; i++) {
+                    sum += this.dataArray[i];
+                }
+                const average = sum / this.dataArray.length;
+                const level = Math.round((average / 255) * 100);
+                
+                // Call update callback
+                this.onLevelUpdate(level);
+                
+                // Check threshold
+                if (level > this.threshold) {
+                    if (!this.isActive) {
+                        this.isActive = true;
+                        console.log('Voice detected! Level:', level);
+                        this.onVoiceStart(level);
+                    }
+                } else {
+                    if (this.isActive) {
+                        this.isActive = false;
+                        console.log('Voice stopped');
+                        this.onVoiceEnd();
+                    }
+                }
+            }
+            
+            setThreshold(value) {
+                this.threshold = value;
+                console.log('Threshold set to:', value);
+            }
+            
+            setSmoothing(value) {
+                this.smoothing = value;
+                if (this.analyser) {
+                    this.analyser.smoothingTimeConstant = value;
+                }
+                console.log('Smoothing set to:', value);
+            }
+            
+            stop() {
+                console.log('Stopping mic detector');
+                
+                if (this.checkInterval) {
+                    clearInterval(this.checkInterval);
+                }
+                
+                if (this.microphone) {
+                    this.microphone.disconnect();
+                }
+                
+                if (this.mediaStream) {
+                    this.mediaStream.getTracks().forEach(track => track.stop());
+                }
+                
+                if (this.audioContext) {
+                    this.audioContext.close();
+                }
+                
+                this.isListening = false;
+                this.isActive = false;
+            }
+            
+            getStatus() {
+                return {
+                    isListening: this.isListening,
+                    isActive: this.isActive,
+                    threshold: this.threshold
+                };
+            }
+        }
+
+        const micDetector = new MicActivityDetector({
+            threshold: 12,
+            smoothing: 0.8,
+            
+            onVoiceStart: async (level) => {
+                console.log('Voice started, level:', level);
+                try {
+                    const response = await fetch('/api/update', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            imageState: 'Chatting',
+                            func: 'voice'
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('Success:', data);
+                    
+                } catch (error) {
+                    console.error('Error sending POST request:', error);
+                }
+            },
+            
+            onVoiceEnd: async () => {
+                console.log('Voice ended');
+                try {
+                    const response = await fetch('/api/update', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            imageState: 'Idle',
+                            func: 'voice'
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('Success:', data);
+                    
+                } catch (error) {
+                    console.error('Error sending POST request:', error);
+                }
+            },
+            
+            onLevelUpdate: (level) => {
+                // This runs continuously, every 100ms
+                // Use sparingly to avoid performance issues
+                // console.log('Current level:', level);
+            }
+        });
+
         async function loadImage() {
             const response = await fetch('/api/image');
             const data = await response.json();
@@ -122,13 +340,13 @@
         const eventSource = new EventSource('/api/events');
 
         eventSource.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        console.log('Received update from server:', data);
-        loadImage();
+            const data = JSON.parse(event.data);
+            console.log('Received update from server:', data);
+            loadImage();
         };
 
         eventSource.onerror = (error) => {
-        console.error('SSE connection error:', error);
+            console.error('SSE connection error:', error);
         };
     </script>
 </body>
